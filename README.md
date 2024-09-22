@@ -1,6 +1,5 @@
 # tick-manager
 
-
 [![Release](https://img.shields.io/github/v/release/WeModulate/tick-manager)](https://img.shields.io/github/v/release/WeModulate/tick-manager)
 [![Build status](https://img.shields.io/github/actions/workflow/status/WeModulate/tick-manager/main.yml?branch=main)](https://github.com/WeModulate/tick-manager/actions/workflows/main.yml?query=branch%3Amain)
 [![codecov](https://codecov.io/gh/WeModulate/tick-manager/branch/main/graph/badge.svg)](https://codecov.io/gh/WeModulate/tick-manager)

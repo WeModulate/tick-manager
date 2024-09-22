@@ -33,7 +33,7 @@ create_executable_file() {
 }
 
 # Root directory
-ROOT_DIR="tick_manager"
+ROOT_DIR="."
 
 # Define directories to create
 DIRS=(
@@ -187,6 +187,7 @@ def test_divide_by_zero():
     with pytest.raises(ValueError):
         divide(10, 0)
 "
+)
 
 declare -A EXECUTABLE_FILES=(
     ["$ROOT_DIR/bin/tick_manager"]=1
@@ -218,14 +219,22 @@ for file in "${!EXECUTABLE_FILES[@]}"; do
     create_executable_file "$file" "${FILES_CONTENT[$file]}"
 done
 
-declare -A DEPS = [
-    "click>=8.1.7",
-    "databento>=0.41.0",
-    "fastapi>=0.115.0",
-    "uvicorn>=0.30.6",
-]
+echo "Creating directories..."
+for dir in "${DIRS[@]}"; do
+    create_dir "$dir"
+done
 
-for dep in "${!DEPS[@]}"; do
+# list of dependencies to install
+DEPS=(
+    "click>=8.1.7"
+    "databento>=0.41.0"
+    "fastapi>=0.115.0"
+    "uvicorn>=0.30.6"
+)
+
+# add the dependencies to pyproject.toml
+echo "Creating deps..."
+for dep in "${DEPS[@]}"; do
     uv add "$dep"
 done
 
