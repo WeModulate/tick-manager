@@ -7,6 +7,7 @@ repos:
       - id: check-toml
       - id: check-yaml
       - id: end-of-file-fixer
+        exclude: ^\.idea/workspace\.xml$
       - id: trailing-whitespace
 
   - repo: https://github.com/astral-sh/ruff-pre-commit

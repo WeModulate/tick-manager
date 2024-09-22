@@ -1,2 +1,5 @@
-#!/usr/bin/env bash
-python -m tick_manager.cli.main "$@"
+#!/usr/bin/env python
+from tick_manager.cli.main import cli
+
+if __name__ == "__main__":
+    cli()

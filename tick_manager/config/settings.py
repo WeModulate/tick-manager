@@ -1,4 +1,5 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
+
 
 class Settings(BaseSettings):
     app_name: str = "Tick Manager"
@@ -7,5 +8,5 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
 
-settings = Settings()
 
+settings = Settings()
