@@ -1,46 +1,46 @@
 # Modules
 
 ## `api/main.py`
-::: tick_manager.api.main
+::: api.main
     handler: python
     options:
         show_source: false
 
 ## `cli/main.py`
-::: tick_manager.cli.main
+::: cli.main
     handler: python
     options:
         show_source: false
 
 ## `config/settings.py`
-::: tick_manager.config.settings
+::: config.settings
     handler: python
     options:
         show_source: false
 
 ## `models/schema.py`
-::: tick_manager.models.schema
+::: models.schema
     handler: python
     options:
         show_source: false
 
 ## `operations/core.py`
 
-::: tick_manager.operations.core
+::: operations.core
     handler: python
     options:
         show_source: false
 
 ## `operations/exceptions.py`
 
-::: tick_manager.operations.exceptions
+::: operations.exceptions
     handler: python
     options:
         show_source: false
 
 ## `utils/helpers.py`
 
-::: tick_manager.utils.helpers
+::: utils.helpers
     handler: python
     options:
         show_source: false
