@@ -5,7 +5,7 @@ site_description: Ingesting, transforming, and aggregating market data
 site_author: John Stanford
 edit_uri: edit/main/docs/
 repo_name: WeModulate/tick-manager
-copyright: Maintained by <a href="https://wemodulate.com">John Stanford</a>.
+copyright: Maintained by <a href="https://www.linkedin.com/in/jxstanford/">John Stanford</a>.
 
 nav:
   - Home: index.md
