@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from tick_manager.cli.main import cli
+from tick_manager.cli.example_main import cli
 
 if __name__ == "__main__":
     cli()

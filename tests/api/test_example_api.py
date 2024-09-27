@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from tick_manager.api.main import app
+from tick_manager.api.example_main import app
 
 client = TestClient(app)
 

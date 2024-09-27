@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 
-from tick_manager.models.schema import OperationRequest, OperationResponse
-from tick_manager.operations.core import add, divide, multiply, subtract
+from tick_manager.models.example_schema import OperationRequest, OperationResponse
+from tick_manager.operations.example import add, divide, multiply, subtract
 
 # Create a FastAPI instance with a title
 app = FastAPI(title="Tick Manager API")

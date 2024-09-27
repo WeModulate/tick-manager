@@ -1,6 +1,6 @@
 from click.testing import CliRunner
 
-from tick_manager.cli.main import cli
+from tick_manager.cli.example_main import cli
 
 
 def test_greet():

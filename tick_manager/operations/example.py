@@ -1,4 +1,4 @@
-from .exceptions import DivisionByZeroError
+from .example_exceptions import DivisionByZeroError
 
 
 def add(a: float, b: float) -> float:

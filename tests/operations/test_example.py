@@ -1,6 +1,6 @@
 import pytest
 
-from tick_manager.operations.core import add, divide, multiply, subtract
+from tick_manager.operations.example import add, divide, multiply, subtract
 
 
 def test_add():
