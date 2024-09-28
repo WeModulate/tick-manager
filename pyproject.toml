@@ -5,13 +5,14 @@ description = "Ingesting, transforming, and aggregating market data"
 authors = [{ name = "John Stanford", email = "787382+jxstanford@users.noreply.github.com" }]
 readme = "README.md"
 keywords = ['python']
-requires-python = ">=3.8,<4.0"
+requires-python = ">=3.10,<4.0"
 dependencies = [
     "click>=8.1.7",
     "fastapi>=0.115.0",
     "pydantic>=2.9.2",
     "pydantic-settings>=2.5.2",
     "uvicorn>=0.30.6",
+    "pyyaml>=6.0.2",
 ]
 
 [project.urls]
@@ -32,6 +33,7 @@ dev-dependencies = [
     "mkdocs-material>=8.5.10",
     "mkdocstrings[python]>=0.19.0",
     "httpx>=0.27.2",
+    "types-pyyaml>=6.0.12.20240917",
 ]
 
 [tool.mypy]
