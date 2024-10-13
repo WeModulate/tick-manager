@@ -1,5 +1,8 @@
+import uvicorn
 from fastapi import FastAPI, HTTPException
 
+from tick_manager.config.logging import setup_logging
+from tick_manager.config.settings import Settings
 from tick_manager.models.example_schema import OperationRequest, OperationResponse
 from tick_manager.operations.example import add, divide, multiply, subtract
 
@@ -85,7 +88,11 @@ def divide_endpoint(request: OperationRequest) -> OperationResponse:
 
 
 if __name__ == "__main__":
-    import uvicorn
+    s = Settings()
+    logger = setup_logging(s)
+    logger.info("API application started")
+    logger.info(f"Using environment file: {s.ConfigDict.env_file}")
+    logger.info(f"Settings:\n {s.model_dump()}")
 
     # Run the FastAPI application using Uvicorn
     uvicorn.run(app, host="localhost", port=8000)

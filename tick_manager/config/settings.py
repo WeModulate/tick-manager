@@ -1,11 +1,67 @@
-import logging.config
-import os
+import json
+import re
+from datetime import date
 from pathlib import Path
 
-# deptry: ignore=DEP004
-import yaml
-from pydantic import field_validator
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
+
+from tick_manager.config.exceptions import ConfigurationError
+
+DATE_REGEX = r"^(19|20)\d\d-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+
+
+def get_default_root_dir() -> Path:
+    return Path(__file__).resolve().parent.parent.parent
+
+
+def get_default_env_file() -> Path:
+    return get_default_root_dir() / ".env"
+
+
+class HistoricalIngestorConfig(BaseSettings):
+    """Configuration settings for the Historical Ingestor."""
+
+    data_root: Path = Field(default_factory=get_default_root_dir, description="Root directory for historical data.")
+    source: str = Field(default="databento", description="Data source for historical ingestion.")
+    store_original_format: bool = Field(default=True, description="Flag to store data in original format.")
+    output_format: str = Field(default="parquet", description="Output format for ingested data.")
+    parquet_partitions: list[str] = Field(
+        default=["year", "month", "day", "schema", "symbol"], description="Partitions for Parquet files."
+    )
+    start_date: str = Field(
+        default_factory=lambda: date.today().isoformat(),
+        description="Start date for data ingestion in YYYY-MM-DD format.",
+    )
+    end_date: str = Field(
+        default_factory=lambda: date.today().isoformat(),
+        description="End date for data ingestion in YYYY-MM-DD format.",
+    )
+
+    @field_validator("parquet_partitions", mode="before")
+    def parse_parquet_partitions(cls, v: str | list[str]) -> list[str]:
+        if isinstance(v, str):
+            try:
+                json_v = json.loads(v)
+                if not isinstance(json_v, list):
+                    raise ConfigurationError(f"Invalid JSON for HISTORY_PARQUET_PARTITIONS: {v}")
+                else:
+                    return json_v
+            except json.JSONDecodeError as e:
+                raise ConfigurationError(f"Invalid JSON for HISTORY_PARQUET_PARTITIONS: {v}") from e
+        return v
+
+    @field_validator("start_date", "end_date")
+    def validate_date_format(cls, v: str) -> str:
+        regex = re.compile(DATE_REGEX)
+        print(f"isinstance: {isinstance(v, str)}")
+        print(f"regex: {bool(regex.fullmatch(v))}")
+        if not isinstance(v, str) or not regex.fullmatch(v):
+            raise ConfigurationError(f"{v} must be a string in 'YYYY-MM-DD' format.")
+        return v
+
+    class Config:
+        env_prefix = "HISTORY_"
 
 
 class Settings(BaseSettings):
@@ -20,8 +76,8 @@ class Settings(BaseSettings):
     """
 
     app_name: str = "Tick Manager"
-    root_dir: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-    log_config: str = os.path.abspath(os.path.join(root_dir, "logging_config.yaml"))
+    root_dir: Path = Field(default_factory=get_default_root_dir)
+    log_config: Path = Field(default_factory=lambda: get_default_root_dir() / "logging_config.yaml")
     log_handler: str = "default"
     debug: bool = False
 
@@ -34,43 +90,13 @@ class Settings(BaseSettings):
             env_file_encoding (str): The encoding of the environment file.
         """
 
-        env_file = os.path.abspath(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".env")))
+        env_file = get_default_env_file()
         env_file_encoding = "utf-8"
 
-    @field_validator("app_name")
-    def validate_not_empty(cls, v: str) -> str:
-        if not v.strip():
-            raise ValueError("app_name must not be empty")  # noqa: TRY003
+    @field_validator("app_name", "root_dir", "log_config", "log_handler")
+    def validate_not_empty(cls, v: str | Path) -> str | Path:
+        if isinstance(v, str) and not v.strip():
+            raise ValueError("app_name must not be empty")
+        if isinstance(v, Path) and not v.name:
+            raise ValueError("app_name must not be empty")
         return v
-
-
-# Instantiate the Settings class to load the configuration
-settings = Settings()
-log_config_file = Path(settings.log_config)
-
-if log_config_file.is_file():
-    try:
-        with log_config_file.open("r") as f:
-            config = yaml.safe_load(f)
-            logging.config.dictConfig(config)
-    except Exception as e:
-        # Handle exceptions related to YAML parsing or logging configuration
-        logging_level = logging.DEBUG if settings.debug else logging.INFO
-        logging.basicConfig(level=logging_level)
-        logging.exception(f"Failed to load logging configuration: {e}")  # noqa: TRY401
-else:
-    # Fallback to basic configuration if YAML file is not found
-    logging_level = logging.DEBUG if settings.debug else logging.INFO
-    logging.basicConfig(level=logging_level)
-    logging.warning(f"Logging configuration file {settings.log_config} not found. Using basic configuration.")
-
-# Retrieve the logger based on the settings
-logger = logging.getLogger(settings.log_handler)
-
-# Validate that the logger exists; if not, fallback to the root logger
-if not logger.handlers:
-    logging.warning(f"Logger '{settings.log_handler}' not found in logging configuration. Using root logger.")
-    logger = logging.getLogger()
-
-logger.info(f"Using environment file: {settings.ConfigDict.env_file}")
-logger.info(f"Settings:\n {settings.model_dump()}")

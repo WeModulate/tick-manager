@@ -95,6 +95,8 @@ ignore = [
     "E501",
     # DoNotAssignLambda
     "E731",
+    # BroadException
+    "TRY003",
 ]
 per-file-ignores = { "tests/*" = ["S101"] }
 

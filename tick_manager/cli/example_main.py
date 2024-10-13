@@ -1,6 +1,8 @@
 import click
 from click import ClickException
 
+from tick_manager.config.logging import setup_logging
+from tick_manager.config.settings import Settings
 from tick_manager.operations.example import add, divide, multiply, subtract
 
 
@@ -11,7 +13,13 @@ def cli() -> None:
 
     This is the main entry point for the Tick Manager CLI.
     """
-    pass
+    s = Settings()
+    logger = setup_logging(s)
+    logger.info("CLI application started")
+    logger.info(f"Using environment file: {s.ConfigDict.env_file}")
+    logger.info(f"Settings:\n {s.model_dump()}")
+
+    # Your CLI application code here
 
 
 @cli.command()
